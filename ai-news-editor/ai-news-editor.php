@@ -354,3 +354,279 @@ AI Test Et
 </button>
 
 </form>
+includes/class-analyzer.php
+<?php
+
+namespace AINE;
+
+defined('ABSPATH') || exit;
+
+
+class Analyzer
+{
+
+
+    public function analyze($post_id)
+    {
+
+
+        $post = get_post($post_id);
+
+
+        if(!$post)
+        {
+            return [
+                'error'=>'Haber bulunamadı'
+            ];
+        }
+
+
+        $title = get_the_title($post_id);
+
+        $content = wp_strip_all_tags(
+            $post->post_content
+        );
+
+
+        $words = str_word_count(
+            $content
+        );
+
+
+        $score = 0;
+
+
+
+        // Başlık kontrolü
+
+        if(strlen($title) >= 35)
+        {
+            $score += 20;
+        }
+
+
+
+        // İçerik uzunluğu
+
+        if($words >= 300)
+        {
+            $score += 30;
+        }
+
+
+
+        // Paragraf kontrolü
+
+        if(substr_count($content,'.') >= 5)
+        {
+            $score += 20;
+        }
+
+
+
+        // Görsel kontrolü
+
+        if(has_post_thumbnail($post_id))
+        {
+            $score += 15;
+        }
+
+
+
+        // Etiket kontrolü
+
+        if(has_tag('', $post_id))
+        {
+            $score += 15;
+        }
+
+
+
+        return [
+
+            'title'=>$title,
+
+            'word_count'=>$words,
+
+            'seo_score'=>$score,
+
+            'status'=>$this->status($score)
+
+        ];
+
+    }
+
+
+
+
+
+    private function status($score)
+    {
+
+        if($score >= 80)
+        {
+            return 'Çok iyi';
+        }
+
+
+        if($score >=50)
+        {
+            return 'Geliştirilebilir';
+        }
+
+
+        return 'Eksik';
+
+    }
+
+
+}admin/class-analyzer-page.php
+    <?php
+
+namespace AINE\Admin;
+
+use AINE\Analyzer;
+
+
+defined('ABSPATH') || exit;
+
+
+
+class AnalyzerPage
+{
+
+
+    public function menu()
+    {
+
+
+        add_submenu_page(
+
+            'ai-news-editor',
+
+            'Haber Analizi',
+
+            'Haber Analizi',
+
+            'manage_options',
+
+            'aine-analyzer',
+
+            [
+                $this,
+                'page'
+            ]
+
+        );
+
+
+    }
+
+
+
+
+
+    public function page()
+    {
+
+        ?>
+
+        <div class="wrap">
+
+        <h1>
+        AI Haber Analizi
+        </h1>
+
+
+        <form method="post">
+
+
+        <input 
+        type="number"
+        name="post_id"
+        placeholder="Haber ID"
+        >
+
+
+        <button class="button button-primary">
+        Analiz Et
+        </button>
+
+
+        </form>
+
+
+        <?php
+
+
+        if(isset($_POST['post_id']))
+        {
+
+
+            $analyzer = new Analyzer();
+
+
+            $result =
+            $analyzer->analyze(
+                intval($_POST['post_id'])
+            );
+
+
+            echo '<pre>';
+
+            print_r($result);
+
+            echo '</pre>';
+
+        }
+
+
+        ?>
+
+        </div>
+
+
+        <?php
+
+    }
+
+
+}require_once AINE_PATH . 'includes/class-analyzer.php';
+require_once AINE_PATH . 'admin/class-analyzer-page.php';
+$analyzer = new \AINE\Admin\AnalyzerPage();
+
+
+add_action(
+    'admin_menu',
+    [
+        $analyzer,
+        'menu'
+    ]
+);
+$analyzer = new \AINE\Admin\AnalyzerPage();
+AI News Editor
+
+├── Dashboard
+├── Ayarlar
+└── Haber Analizi
+    1234
+    Başlık:
+Mardin'de yeni proje başladı
+
+Kelime:
+650
+
+SEO Puanı:
+85
+
+Durum:
+Çok iyi
+
+
+add_action(
+    'admin_menu',
+    [
+        $analyzer,
+        'menu'
+    ]
+);
