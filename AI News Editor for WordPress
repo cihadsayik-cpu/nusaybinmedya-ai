@@ -23,3 +23,34 @@ ai-news-editor/
 ├── readme.txt
 ├── LICENSE
 └── ai-news-editor.php
+<?php
+/**
+ * Plugin Name: AI News Editor
+ * Plugin URI: https://github.com/cihadsayik-cpu/ai-news-editor
+ * Description: AI-powered news editor for WordPress. Analyze news, generate SEO metadata, AI summaries and improve content quality.
+ * Version: 0.1.0
+ * Author: Cihat Şayık
+ * Author URI: https://github.com/cihadsayik-cpu
+ * License: GPL v2 or later
+ * Text Domain: ai-news-editor
+ * Requires PHP: 8.1
+ * Requires at least: 6.4
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+define( 'AINE_VERSION', '0.1.0' );
+define( 'AINE_PLUGIN_FILE', __FILE__ );
+define( 'AINE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'AINE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+
+require_once AINE_PLUGIN_PATH . 'includes/class-plugin.php';
+
+function aine_boot() {
+	$plugin = new AINE\Plugin();
+	$plugin->run();
+}
+
+add_action( 'plugins_loaded', 'aine_boot' );
