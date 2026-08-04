@@ -1,0 +1,2 @@
+# nusaybinmedya-ai
+nusaybinmedya
