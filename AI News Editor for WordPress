@@ -11,3 +11,15 @@ nusaybinmedya-ai/
 ├── uninstall.php
 ├── readme.txt
 └── nusaybinmedya-ai.php
+ai-news-editor/
+├── admin/
+├── includes/
+├── assets/
+│   ├── css/
+│   └── js/
+├── languages/
+├── templates/
+├── uninstall.php
+├── readme.txt
+├── LICENSE
+└── ai-news-editor.php
