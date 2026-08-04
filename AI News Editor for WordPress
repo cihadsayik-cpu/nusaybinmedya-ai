@@ -54,3 +54,39 @@ function aine_boot() {
 }
 
 add_action( 'plugins_loaded', 'aine_boot' );
+<?php
+
+namespace AINE;
+
+defined('ABSPATH') || exit;
+
+class Plugin {
+
+	public function run() {
+		add_action('admin_menu', [$this, 'register_menu']);
+	}
+
+	public function register_menu() {
+
+		add_menu_page(
+			'AI News Editor',
+			'AI News Editor',
+			'manage_options',
+			'ai-news-editor',
+			[$this,'dashboard'],
+			'dashicons-superhero',
+			25
+		);
+
+	}
+
+	public function dashboard() {
+
+		echo '<div class="wrap">';
+		echo '<h1>AI News Editor</h1>';
+		echo '<p>Welcome to version 0.1</p>';
+		echo '</div>';
+
+	}
+
+}
